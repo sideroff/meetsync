@@ -42,3 +42,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# do not publish api keys to repo
+/src/app/config/apiKeys.js
