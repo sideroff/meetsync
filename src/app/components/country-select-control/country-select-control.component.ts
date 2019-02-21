@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { tap, map, startWith } from 'rxjs/operators';
-let countriesJSON = require('./countries.json')
+
+let countriesJSON = {}
 
 @Component({
   selector: 'country-select-control',
@@ -20,6 +21,8 @@ export class CountrySelectControlComponent {
         startWith(''),
         map(value => this._filter(value))
       );
+
+    console.log(window)
   }
 
   public getCountryViewValue(country: any) {
@@ -30,8 +33,8 @@ export class CountrySelectControlComponent {
 
   private _filter(value: string): any {
     if (typeof value !== 'string') return;
- 
-    
+
+
     const filterValue = value.toLowerCase();
     let filteredEntries = Object.entries(this.countries).filter((entry: any) => {
       return entry[1].toLowerCase().includes(filterValue);
