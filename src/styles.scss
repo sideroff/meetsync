@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    // remove default margin & padding
+    margin: inherit !important;
+    padding: inherit !important;
+
+    // default font family
+    font-family: 'Roboto', sans-serif;
+
+    .page {
+        padding: 0 15px;
+    }
+}

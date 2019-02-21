@@ -1,0 +1,32 @@
+@import "../../../variables.scss";
+
+.header-border {
+    background-image: linear-gradient(to right, $accent-color, $primary-color);
+    padding: 1px;
+
+    header {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        background-image: linear-gradient(to right, $primary-color, $accent-color);
+        padding: 5px 2px;
+
+        .logo {
+            display: flex;
+            align-items: center;
+
+            * {
+                padding-left: 5px;
+            }
+
+            .text {
+                font-size: 1.4em;
+                color: whitesmoke;
+            }
+
+            .emoji {
+                font-size: 0.8em;
+            }
+        }
+    }
+}
