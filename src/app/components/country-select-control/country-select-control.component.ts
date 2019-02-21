@@ -30,7 +30,8 @@ export class CountrySelectControlComponent {
 
   private _filter(value: string): any {
     if (typeof value !== 'string') return;
-
+ 
+    
     const filterValue = value.toLowerCase();
     let filteredEntries = Object.entries(this.countries).filter((entry: any) => {
       return entry[1].toLowerCase().includes(filterValue);
