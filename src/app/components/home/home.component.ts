@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-// publically accessible variable from google places api
+// https://medium.com/@balramchavan/integrating-google-maps-in-angular-5-ca5f68009f29
+// https://jsfiddle.net/api/post/library/pure/ 
 
 @Component({
   selector: 'home-page',
