@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { tap, map, startWith } from 'rxjs/operators';
+import { tap, switchMap, filter, debounceTime, catchError, } from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import apiKey from '../../config/apiKeys.js'
+import { Observable, of as ObservableOf } from 'rxjs';
 
-let countriesJSON = {}
+declare let google: any
+
 
 @Component({
   selector: 'country-select-control',
@@ -11,39 +14,47 @@ let countriesJSON = {}
   styleUrls: ['./country-select-control.component.scss']
 })
 export class CountrySelectControlComponent {
-  public countries: any = countriesJSON;
-  public filteredCountries: Observable<any>;
-  public myControl: FormControl = new FormControl();
+  public cityInput: FormControl = new FormControl();
+  public options: string[] = [];
+  public isGettingCities: Boolean = false;
+
+  constructor() { }
 
   ngOnInit() {
-    this.filteredCountries = this.myControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value))
-      );
 
-    console.log(window)
-  }
+    this.cityInput.valueChanges.pipe(
 
-  public getCountryViewValue(country: any) {
-    return country
-      ? country.value
-      : '';
-  }
-
-  private _filter(value: string): any {
-    if (typeof value !== 'string') return;
-
-
-    const filterValue = value.toLowerCase();
-    let filteredEntries = Object.entries(this.countries).filter((entry: any) => {
-      return entry[1].toLowerCase().includes(filterValue);
+      tap(() => console.log('here')),
+      debounceTime(300),
+      filter(input => input.length >= 3),
+      tap(() => this.isGettingCities = true),
+      switchMap(input =>{
+        let autocomplete = new google.maps.places.Autocomplete(input, {types: ['(cities)']})
+        console.log('autocomplete', autocomplete)
+        
+        return ObservableOf([])
+      }).pipe(catchError(error => {
+          console.log('error', error);
+          return ObservableOf([])
+        }),
+          tap(results => {
+            console.log('results', results);
+          })
+        )
+      )
+    ).subscribe(values => {
+      console.log('values ', values)
     })
-
-    let filteredEntriesObject = filteredEntries.reduce((accumulator, current) => {
-      return Object.assign(accumulator, { [current[0]]: current[1] })
-    }, {})
-
-    return filteredEntriesObject
   }
 }
+// https://maps.googleapis.com/maps/api/place/autocomplete/json?
+// key=AIzaSyAZQIarWMHjxknSQLuddmeNJHnRdXRyFac
+// &input=Sofia
+// &types=(cities)
+
+
+// https://maps.googleapis.com/maps/api/timezone/json?
+// location=39.6034810,-119.6822510
+// &timestamp=1551088663
+// &key=AIzaSyAZQIarWMHjxknSQLuddmeNJHnRdXRyFac
+

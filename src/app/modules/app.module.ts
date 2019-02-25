@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 // Material
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,13 +18,15 @@ import { AppComponent } from '../components/app/app.component';
 import { HomeComponent } from '../components/home/home.component';
 import { TimelineComponent } from '../components/timeline/timeline.component';
 import { CountrySelectControlComponent } from '../components/country-select-control/country-select-control.component';
+import { NotFoundComponent } from '../components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     TimelineComponent,
-    CountrySelectControlComponent
+    CountrySelectControlComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,6 +39,7 @@ import { CountrySelectControlComponent } from '../components/country-select-cont
     MatAutocompleteModule,
     MatSelectModule,
     MatInputModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
