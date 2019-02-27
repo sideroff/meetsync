@@ -19,6 +19,7 @@ import { HomeComponent } from '../components/home/home.component';
 import { TimelineComponent } from '../components/timeline/timeline.component';
 import { CountrySelectControlComponent } from '../components/country-select-control/country-select-control.component';
 import { NotFoundComponent } from '../components/not-found/not-found.component';
+import { LoaderComponent } from '../components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { NotFoundComponent } from '../components/not-found/not-found.component';
     TimelineComponent,
     CountrySelectControlComponent,
     NotFoundComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
