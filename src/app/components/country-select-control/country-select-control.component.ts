@@ -18,12 +18,15 @@ export class CountrySelectControlComponent {
   public cityInput: FormControl = new FormControl();
   public options: any;
   public isGettingCities: Boolean = false;
-  public googlePlacesAutocompleteService: any;
-  public googlePlacesApiSessionToken: any;
-  constructor() {
 
-    this.googlePlacesApiSessionToken = new google.maps.places.AutocompleteSessionToken();
+  public googlePlacesApiSessionToken: any;
+  public googlePlacesAutocompleteService: any;
+  public googlePlacesService: any;
+
+  constructor() {
+    this.resetGooglePlacesApiSessionToken();
     this.googlePlacesAutocompleteService = new google.maps.places.AutocompleteService();
+    this.googlePlacesService = new google.maps.places.PlacesService(document.createElement('div'));
   }
 
   ngOnInit() {
@@ -44,21 +47,44 @@ export class CountrySelectControlComponent {
             setTimeout(function () { resolve(mockGoogleResult) }, 150)
           }));
 
-        return ObservableFromPromise(this.getPredictions(input, this.googlePlacesApiSessionToken))
+        return ObservableFromPromise(this.getPredictions(input))
       })).subscribe(results => {
         this.options = results;
         this.isGettingCities = false;
       })
   }
 
-  getPredictions(input, sessionToken, types = ['(cities)']) {
+  getPredictions(input, sessionToken = this.googlePlacesApiSessionToken, types = ['(cities)']) {
     return new Promise((resolve, reject) => {
       this.googlePlacesAutocompleteService.getPlacePredictions({
         input,
         types,
         sessionToken,
-      }, result => {
-        if (result instanceof Error) return reject(result);
+      }, (result, statusCode) => {
+        this.resetGooglePlacesApiSessionToken()
+        if (result instanceof Error || statusCode !== google.maps.places.PlacesServiceStatus.OK) return reject(result);
+        resolve(result)
+      })
+    })
+  }
+
+  resetGooglePlacesApiSessionToken() {
+    // only 1 getDetails request is allowed per session ( = autocomplete keystrokes + getDetails search for a specific place )
+    // so we need to reset it on every getDetails call
+    this.googlePlacesApiSessionToken = new google.maps.places.AutocompleteSessionToken();
+  }
+
+  getPlaceDetails(placeId, sessionToken = this.googlePlacesApiSessionToken, fields = ['utc_offset']) {
+    const request = {
+      placeId,
+      fields,
+      sessionToken,
+    };
+    console.log('request ', request)
+
+    return new Promise((resolve, reject) => {
+      this.googlePlacesService.getDetails(request, (result, statusCode) => {
+        if (result instanceof Error || statusCode !== google.maps.places.PlacesServiceStatus.OK) return reject(result);
         resolve(result)
       })
     })
@@ -72,6 +98,14 @@ export class CountrySelectControlComponent {
     const option = event.option.value;
 
     console.log(option);
+
+    this.getPlaceDetails(option.place_id)
+      .then(result => {
+        console.log('place details result ', result)
+      }).catch(error => {
+        console.log('get details error ', error)
+      })
+      //added: date-fns for date manipulations
 
     // https://developers.google.com/maps/documentation/javascript/places
 
